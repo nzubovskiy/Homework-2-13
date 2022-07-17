@@ -1,5 +1,6 @@
 package com.example.homework213.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
@@ -7,38 +8,36 @@ import java.util.Objects;
 
 
 public class Employee {
-    private String fullName;
-    private Integer department;
-    private Integer salary;
+    @JsonProperty("firstName")
+    private final String name;
 
-    public Employee(String fullName, Integer department, Integer salary) {
-        this.fullName = StringUtils.capitalize(fullName);
+    @JsonProperty("lastName")
+    private final String surname;
+
+    private final int department;
+    private final double salary;
+
+    public Employee(String name, String surname,int department, double salary) {
+        this.name = name;
+        this.surname = surname;
         this.department = department;
         this.salary = salary;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String fullName) {
-        this.fullName = fullName;
+    public String getSurname() {
+        return surname;
     }
 
-    public Integer getDepartment() {
+    public int getDepartment() {
         return department;
     }
 
-    public void setDepartment(Integer department) {
-        this.department = department;
-    }
-
-    public Integer getSalary() {
+    public double getSalary() {
         return salary;
-    }
-
-    public void setSalary(Integer salary) {
-        this.salary = salary;
     }
 
     @Override
@@ -46,21 +45,17 @@ public class Employee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return fullName.equals(employee.fullName) && department == employee.department && salary == employee.salary;
+        return department == employee.department && Double.compare(employee.salary, salary) == 0 && name.equals(employee.name) && surname.equals(employee.surname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fullName, department, salary);
+        return Objects.hash(name, surname, department, salary);
     }
 
     @Override
     public String toString() {
-        return "Employee{" +
-                "ФИО: " + fullName + '\'' +
-                ", Отдел: " + department +
-                ", Зарплата = " + salary +
-                '}';
+        return String.format("ФИ: %s %s, отдел: %d, ЗП: %.2f", surname, name, department, salary);
     }
 }
 

@@ -1,13 +1,11 @@
 package com.example.homework213.service;
 
 
+import com.example.homework213.exceptions.EmployeeNotFoundException;
 import com.example.homework213.model.Employee;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -21,28 +19,28 @@ public class DepartmentService {
         this.employeeService = employeeService;
     }
 
-    public Employee maxSalary(Integer department) {
+    public Employee maxSalary(int departmentId) {
         return employeeService.getAll().stream()
-                .filter(e -> Objects.equals(e.getDepartment(), department))
-                .max(Comparator.comparingInt(c -> c.getSalary())).get();
-
+                .filter(employee -> employee.getDepartment() == departmentId)
+                .max(Comparator.comparingDouble(Employee::getSalary))
+                .orElseThrow(EmployeeNotFoundException::new);
     }
 
-    public Employee minSalary(Integer department) {
+    public Employee minSalary(int departmentId) {
         return employeeService.getAll().stream()
-                .filter(e -> Objects.equals(e.getDepartment(), department))
-                .min(Comparator.comparingInt(c -> c.getSalary())).get();
-        
+                .filter(employee -> employee.getDepartment() == departmentId)
+                .min(Comparator.comparingDouble(Employee::getSalary))
+                .orElseThrow(EmployeeNotFoundException::new);
     }
 
-    public List<Employee> getEmployeeByDepartment(Integer department) {
+    public List<Employee> getEmployeeByDepartment(int departmentId) {
         return employeeService.getAll().stream()
-                .filter(e -> e.getDepartment() == department)
+                .filter(e -> e.getDepartment() == departmentId)
                 .collect(Collectors.toList());
     }
 
     public Map<Integer, List<Employee>> allEmployee() {
         return employeeService.getAll().stream()
-                .collect(Collectors.groupingBy(e -> e.getDepartment(), Collectors.toList()));
+                .collect(Collectors.groupingBy(Employee::getDepartment));
     }
 }
